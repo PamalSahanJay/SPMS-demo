@@ -1,29 +1,38 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 
 interface MovieState {
     movieList: any[];
-    movie: any;
+    loading: boolean;
+    error : string | null;
 }
 
 const initialMovieState: MovieState = {
     movieList: [],
-    movie: {}
+    loading: false,
+    error: null
 };
 
 const movieSlice = createSlice({
     name: "movie",
     initialState: initialMovieState,
     reducers: {
-        setMovieList(state, action) {
-            state.movieList = action.payload;
+        getMovies: (state, action) => {
+            state.loading = true;
+            state.error = null;
         },
-        setMovie(state, action) {
-            state.movie = action.payload;
+        getMoviesSuccess: (state, action: PayloadAction<any>) => {
+            state.movieList = action.payload;
+            state.loading = false;
+            state.error = null;
+        },
+        getMoviesFailure: (state, action: PayloadAction<string>) => {
+            state.loading = false;
+            state.error = action.payload;
         }
     }
 })
 
-export const { setMovieList, setMovie } = movieSlice.actions
+export const { getMovies, getMoviesSuccess, getMoviesFailure } = movieSlice.actions
 
 export default movieSlice.reducer
 
